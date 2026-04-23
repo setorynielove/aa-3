@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Order Summary</title>
+</head>
+
+<body>
+
+<h2>Order Summary</h2>
+
+<p id="output"></p>
+
+<script>
+
+//GETS COOKIES
+function getCookie(name) {
+  let cookies = document.cookie.split(";");
+  for (let i = 0; i < cookies.length; i++) {
+    let parts = cookies[i].trim().split("=");
+    if (parts[0] == name) {
+      return parts[1];
+    }
+  }
+  return "";
+}
+
+//DATA FROM LOCAL STORAGE AND COOKIES
+let name = localStorage.getItem("customername");
+let variant = localStorage.getItem("variant");
+let quantity = localStorage.getItem("quantity");
+let pickup = localStorage.getItem("pickup");
+let address = localStorage.getItem("address");
+
+if (variant == null) {
+  document.getElementById("output").innerHTML = "No order found";
+} else {
+
+  // PRODUCTS AND PRICES
+  let prices = {
+    "SMALL": 250,
+    "MEDIUM": 350,
+    "LARGE": 450
+  };
+
+  let product = variant;
+  let price = prices[variant];
+
+  let total = price * quantity;
+
+  let result = "";
+  result += "Customer Name: " + name + "<br>";
+  result += "Product: " + product + "<br>";
+  result += "Quantity: " + quantity + "<br>";
+  result += "Total Amount: PHP " + total + "<br>";
+  result += "Pickup Method: " + pickup + "<br>";
+
+  if (pickup == "Delivery") {
+    result += "Address: " + address + "<br>";
+  }
+
+  result += "<br> THANKS SO MUCHHH FOR ORDERING <br>"
+  
+  document.getElementById("output").innerHTML = result;
+}
+
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>

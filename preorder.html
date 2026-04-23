@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pre-Order Form</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background-color: #fffaad;
+    }
+
+    .container {
+      width: 500px;
+      margin: auto;
+      background: rgb(72, 144, 238);
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 50px;
+    }
+
+    input, select {
+      width: 95%;
+      padding: 8px;
+      margin: 8px 0;
+    }
+
+    #terms {
+      width: 10%;
+    }
+
+    button {
+      padding: 10px;
+      width: 100%;
+      margin-top: 5px;
+      background-color: #fffaad;
+      color: rgb(72, 144, 238);
+      border: none;
+    }
+
+    .error {
+      color: rgb(255, 255, 255);
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Science Project Pre-Order</h2>
+
+  <p>
+   PROJECT M.A.N.T.A IS SO COOOLLL ORDER NOWWWW!
+  </p>
+
+  <div id="errorMsg" class="error"></div>
+
+  <form onsubmit="return handleOrder()">
+    
+    <label>Name:</label>
+    <input type="text" id="name">
+
+    <label>Product:</label>
+    <select id="variant">
+      <option value="">Select</option>
+      <option value="SMALL">SMALL (PHP 250)</option>
+      <option value="MEDIUM">MEDIUM (PHP 350)</option>
+      <option value="LARGE">LARGE (PHP 450)</option>
+    </select>
+
+    <label>Quantity:</label>
+    <input type="number" id="quantity">
+
+    <label>Pickup Method:</label>
+    <select id="pickup">
+      <option value="">Select</option>
+      <option value="Delivery">Delivery</option>
+      <option value="Meetup">Meetup</option>
+    </select>
+
+    <label>Address (for delivery only):</label>
+    <input type="text" id="address">
+
+    <label>
+      <input type="checkbox" id="terms"> I accept terms
+    </label>
+
+    <button type="button" onclick="loadPreviousOrder()">Load Previous Order</button>
+    <button type="submit">Submit</button>
+
+  </form>
+</div>
+
+<script>
+
+//cookie functions
+function setCookie(name, value, maxAge) {
+  document.cookie = name + "=" + value + "; max-age=" + maxAge + "; path=/";
+}
+
+function getCookie(name) {
+  let cookies = document.cookie.split(";");
+  for (let i = 0; i < cookies.length; i++) {
+    let parts = cookies[i].trim().split("=");
+    if (parts[0] == name) {
+      return parts[1];
+    }
+  }
+  return "";
+}
+
+function deleteCookie(name) {
+  document.cookie = name + "=; max-age=0; path=/";
+}
+
+//Checks if form is filled correctly
+function validateForm(name, variant, quantity, pickup, address, terms) {
+  let errors = [];
+
+  if (name == "") errors.push("Name is required");
+  if (variant == "") errors.push("Product is required");
+  if (quantity == "" || quantity <= 0) errors.push("Quantity must be greater than 0");
+  if (pickup == "") errors.push("Pickup method is required");
+  if (!terms) errors.push("You must accept terms");
+  if (pickup == "Delivery" && address == "") {
+    errors.push("Address is required for delivery");
+  }
+
+  return errors;
+}
+
+//Main function for order submission
+function handleOrder() {
+
+  document.getElementById("errorMsg").innerHTML = "";
+
+  let name = document.getElementById("name").value;
+  let variant = document.getElementById("variant").value;
+  let quantity = document.getElementById("quantity").value;
+  let pickup = document.getElementById("pickup").value;
+  let address = document.getElementById("address").value;
+  let terms = document.getElementById("terms").checked;
+
+  let errors = validateForm(name, variant, quantity, pickup, address, terms);
+
+  if (errors.length > 0) {
+    document.getElementById("errorMsg").innerHTML = errors.join("<br>");
+    return false;
+  }
+
+  //Saves data
+  localStorage.setItem("customername", name);
+
+  localStorage.setItem("variant", variant);
+  localStorage.setItem("quantity", quantity);
+  localStorage.setItem("pickup", pickup);
+  localStorage.setItem("address", address);
+
+  //Summary
+  window.location.href = "summary.html";
+
+  return false;
+}
+
+//Loads previous order data
+function loadPreviousOrder() {
+
+  let name = localStorage.getItem("customername");
+  let variant = localStorage.getItem("variant");
+
+  if (!name && !variant) {
+    document.getElementById("errorMsg").innerHTML = "No previous order data";
+    return;
+  }
+
+  document.getElementById("name").value = name;
+  document.getElementById("variant").value = variant;
+  document.getElementById("quantity").value = localStorage.getItem("quantity");
+  document.getElementById("pickup").value = localStorage.getItem("pickup");
+  document.getElementById("address").value = localStorage.getItem("address");
+}
+
+</script>
+</body>
+</html>
